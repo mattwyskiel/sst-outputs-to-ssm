@@ -17,7 +17,8 @@ async function run(): Promise<void> {
       for (const outputName in outputs[stackName]) {
         const command = new PutParameterCommand({
           Name: `/${prefix}/${stackName}/${outputName}`,
-          Value: outputs[stackName][outputName]
+          Value: outputs[stackName][outputName],
+          Type: 'String'
         })
         await ssm.send(command)
       }

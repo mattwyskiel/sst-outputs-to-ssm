@@ -54,7 +54,8 @@ function run() {
                 for (const outputName in outputs[stackName]) {
                     const command = new client_ssm_1.PutParameterCommand({
                         Name: `/${prefix}/${stackName}/${outputName}`,
-                        Value: outputs[stackName][outputName]
+                        Value: outputs[stackName][outputName],
+                        Type: 'String'
                     });
                     yield ssm.send(command);
                 }
