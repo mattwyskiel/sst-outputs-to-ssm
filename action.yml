@@ -1,11 +1,19 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'SST Outputs to AWS SSM Parameter Store'
+description: 'Enables sending SST outputs to AWS Systems Manager Parameter Store for use by other services (eliminates the use of environment variables in this context)'
+author: 'Matt Wyskiel (@mattwyskiel)'
 inputs:
-  milliseconds: # change this
+  outputs_path: # change this
     required: true
     description: 'input description here'
-    default: 'default value if applicable'
+    default: '.sst/outputs.json'
+  aws_region:
+    required: false
+    description: 'The AWS region in which to upload the Outputs'
+    default: 'us-east-1'
+  prefix:
+    required: false
+    description: 'The prefix for the SSM parameter'
+    default: 'sst-outputs'
 runs:
   using: 'node16'
   main: 'dist/index.js'

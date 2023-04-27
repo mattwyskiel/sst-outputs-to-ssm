@@ -1,16 +1,24 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import {PutParameterCommand, SSMClient} from '@aws-sdk/client-ssm'
+import {readFile} from 'fs/promises'
 
 async function run(): Promise<void> {
+  const ssm = new SSMClient({region: core.getInput('aws_region')})
+
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const fileName = core.getInput('outputs_path')
+    const prefix = core.getInput('prefix')
+    const outputsString = await readFile(fileName, {encoding: 'utf-8'})
+    const outputs = JSON.parse(outputsString)
+    for (const stackName in outputs) {
+      for (const outputName in outputs[stackName]) {
+        const command = new PutParameterCommand({
+          Name: `/${prefix}/${stackName}/${outputName}`,
+          Value: outputs[stackName][outputName]
+        })
+        await ssm.send(command)
+      }
+    }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
