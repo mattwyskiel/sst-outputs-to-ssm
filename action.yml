@@ -3,13 +3,12 @@ description: 'Enables sending SST outputs to AWS Systems Manager Parameter Store
 author: 'Matt Wyskiel (@mattwyskiel)'
 inputs:
   outputs_path: # change this
-    required: true
+    required: false
     description: 'input description here'
     default: '.sst/outputs.json'
   aws_region:
     required: false
     description: 'The AWS region in which to upload the Outputs'
-    default: 'us-east-1'
   prefix:
     required: false
     description: 'The prefix for the SSM parameter'

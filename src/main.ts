@@ -3,12 +3,15 @@ import {PutParameterCommand, SSMClient} from '@aws-sdk/client-ssm'
 import {readFile} from 'fs/promises'
 
 async function run(): Promise<void> {
-  const ssm = new SSMClient({region: core.getInput('aws_region')})
+  const ssm = new SSMClient({region: process.env.AWS_REGION})
 
   try {
     const fileName = core.getInput('outputs_path')
     const prefix = core.getInput('prefix')
-    const outputsString = await readFile(fileName, {encoding: 'utf-8'})
+    const outputsString = await readFile(
+      `${process.env.GITHUB_WORKSPACE}/${fileName}`,
+      {encoding: 'utf-8'}
+    )
     const outputs = JSON.parse(outputsString)
     for (const stackName in outputs) {
       for (const outputName in outputs[stackName]) {
