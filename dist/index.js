@@ -44,11 +44,11 @@ const client_ssm_1 = __nccwpck_require__(20341);
 const promises_1 = __nccwpck_require__(73292);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        const ssm = new client_ssm_1.SSMClient({ region: core.getInput('aws_region') });
+        const ssm = new client_ssm_1.SSMClient({ region: process.env.AWS_REGION });
         try {
             const fileName = core.getInput('outputs_path');
             const prefix = core.getInput('prefix');
-            const outputsString = yield (0, promises_1.readFile)(fileName, { encoding: 'utf-8' });
+            const outputsString = yield (0, promises_1.readFile)(`${process.env.GITHUB_WORKSPACE}/${fileName}`, { encoding: 'utf-8' });
             const outputs = JSON.parse(outputsString);
             for (const stackName in outputs) {
                 for (const outputName in outputs[stackName]) {
